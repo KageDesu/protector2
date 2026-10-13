@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = ["core", "app"]
+
+[workspace.package]
+version = "2.0.0"
+edition = "2021"
+authors = ["Pheonix KageDesu <http://kdworkshop.net/>"]
+license = "MIT"
+
+# Small release binary
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

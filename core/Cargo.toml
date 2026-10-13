@@ -1,0 +1,22 @@
+[package]
+name = "protector_core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+aes-gcm = "0.11.1"
+base64 = "0.23.1"
+getrandom = "0.4.3"
+oxc_allocator = "0.154.0"
+oxc_codegen = "0.154.0"
+oxc_mangler = "0.154.0"
+oxc_minifier = "0.154.0"
+oxc_parser = "0.154.0"
+oxc_span = "0.154.0"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+
+[dev-dependencies]
+tempfile = "3.20.0"
