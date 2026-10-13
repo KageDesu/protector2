@@ -19,16 +19,25 @@ PKD Protector merges your enabled plugins into a single file and can encrypt the
 - **Minify (optional):** removes comments, help text, and formatting from readable plugins. Already-obfuscated plugins are left exactly as they are.
 - **Backup (optional):** copies `js/plugins` to a timestamped folder before any change.
 - **Safety checks:** refuses editor (working) projects and projects that were already protected, and asks for confirmation with a 3-second lock on **Yes**.
-- **Single small executable:** about 6 MB, no installer or runtime required.
+- **Single small executable:** about 6 MB, no installer or runtime required. Builds for Windows, macOS, and Linux.
 
 ## Download & Installation
 
 1. Open this repository's **[Releases](../../releases)** page.
-2. Under **Assets**, download the Windows application archive. The **Source code** archives are for developers building the application themselves.
-3. Extract the archive to a folder of your choice.
-4. Run **`PKD_Protector.exe`**. No installation is required.
+2. Under **Assets**, download the archive for your system. The **Source code** archives are for developers building the application themselves.
 
-Windows is the current distribution platform. Linux and macOS builds have not yet been verified; see [Build from source](#build-from-source) if you want to try building for your system.
+| System | Archive | How to start |
+| --- | --- | --- |
+| Windows x64 | `PKD_Protector-<version>-windows-x64.zip` | Extract and run **`PKD_Protector.exe`**. |
+| macOS (Apple Silicon) | `PKD_Protector-<version>-macos-arm64.tar.gz` | Extract and launch `PKD_Protector` from Terminal. |
+| Linux x64 | `PKD_Protector-<version>-linux-x64.tar.gz` | Extract and run `./PKD_Protector`. |
+
+No installation is required. Each archive contains the executable, `LICENSE`, and a short `README.txt`.
+
+- **macOS:** the build is not signed or notarized. If Gatekeeper blocks it, right-click the file and choose **Open**, or run `xattr -d com.apple.quarantine PKD_Protector` in its folder.
+- **Linux:** a graphical desktop, an OpenGL driver, and a file-dialog portal backend (xdg-desktop-portal) or Zenity are required.
+
+Windows is the primary platform. The macOS and Linux builds are produced automatically and have had less real-world testing; please report any problems in **Issues**.
 
 ## Quick Start
 
@@ -65,13 +74,18 @@ Windows is the current distribution platform. Linux and macOS builds have not ye
 Install **Git** and the latest stable **Rust** toolchain using the [official Rust installation instructions](https://rust-lang.org/tools/install/).
 
 - **Windows:** install Visual Studio Build Tools with the **Desktop development with C++** workload and a Windows SDK. Use Rust's MSVC toolchain. The SDK's resource compiler embeds the application icon; without it the build still succeeds, only the `.exe` icon is missing.
-- **Linux:** install a C/C++ toolchain and the desktop development libraries required by [eframe](https://github.com/emilk/egui/tree/main/crates/eframe#readme).
+- **macOS:** install the Xcode Command Line Tools (`xcode-select --install`).
+- **Linux:** install a C/C++ toolchain and the desktop development libraries required by [eframe](https://github.com/emilk/egui/tree/main/crates/eframe#readme). On Debian / Ubuntu:
+
+  ```sh
+  sudo apt-get install build-essential pkg-config libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libssl-dev libwayland-dev libx11-dev libxi-dev libxrandr-dev libgl1-mesa-dev
+  ```
 
 ### Compile and Run
 
 ```sh
-git clone https://github.com/KageDesu/PKD_Protector.git PKD_Protector
-cd PKD_Protector
+git clone https://github.com/KageDesu/protector2.git
+cd protector2
 cargo build --release --locked
 ```
 
@@ -95,6 +109,24 @@ Run the tests:
 ```sh
 cargo test -p protector_core
 ```
+
+### Publishing a Release
+
+Releases are built by the [Release workflow](.github/workflows/release.yml) with GitHub Actions.
+
+1. Set the new version in `[workspace.package]` of the root `Cargo.toml` and commit (with the updated `Cargo.lock`).
+2. Create and push a tag with the same version, for example:
+
+   ```sh
+   git tag 2.0.1
+   git push origin 2.0.1
+   ```
+
+   A `v` prefix (`v2.0.1`) is also accepted. The workflow fails if the tag does not match the `Cargo.toml` version.
+3. The workflow runs the core tests and builds Windows x64, macOS Apple Silicon, and Linux x64 archives, then creates a **draft** release with all three attached.
+4. Review the draft on the Releases page, edit the notes, and click **Publish release**.
+
+Re-running the workflow for the same tag replaces the assets of the draft; a release that is already published is never modified.
 
 ## Feedback & Contributions
 
